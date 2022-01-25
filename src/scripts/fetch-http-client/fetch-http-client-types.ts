@@ -4,14 +4,14 @@ type RecordFetch<K extends keyof any, T> = {
   [P in K]: T;
 };
 
-export type FetchRequestHeaders = RecordFetch<string, string | number | boolean>;
+export type FetchRequestHeaders = RecordFetch<string, string>;
 
 export interface RequestConfig {
   url?: string;
   method?: Method;
-  headers?: FetchRequestHeaders;
+  headers?: Record<string, string>;
   data?: BodyInit | {};
-  params?: BodyInit | {}; 
+  params?: Record<string, string>; 
 }
 
 export interface FetchResponse<T = any> {

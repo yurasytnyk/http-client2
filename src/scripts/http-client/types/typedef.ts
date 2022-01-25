@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosRequestHeaders } from 'axios';
+import { AxiosInstance } from 'axios';
 import { FetchHttpClient } from '../../fetch-http-client/fetch-http-client';
 import { AxiosResponse } from 'axios';
 import { FetchResponse } from '../../fetch-http-client/fetch-http-client-types';
@@ -13,5 +13,5 @@ export interface MethodOptions<T> {
 }
 
 export interface HttpClientOptions {
-  customHeaders?: AxiosRequestHeaders;
+  customHeaders?: Record<string, string>;
 }

@@ -2,10 +2,10 @@ import axios from "axios";
 import { HttpClientInstance } from "../../http-client/types/typedef";
 import { getAxiosInstance } from "../type-checkers/type-checkers";
 
-export const getClientInstance = (client: HttpClientInstance) => {
+export const getClientInstance = (client: HttpClientInstance, baseURL: string) => {
   if (getAxiosInstance(client)) {
     const instance = axios.create({
-      baseURL: '', // <-- don't forget
+      baseURL,
     });
 
     instance.interceptors.request.use((config) => {

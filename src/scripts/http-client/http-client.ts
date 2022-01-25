@@ -8,14 +8,15 @@ import { MethodOptions } from './types/typedef';
 import { ResponseType } from './types/typedef';
 
 export class HttpClient {
+  private baseURL: string = '';
   private client: HttpClientInstance;
   private options: HttpClientOptions;
   private customHeaders: FetchRequestHeaders = {};
 
-  constructor(client: HttpClientInstance, options: HttpClientOptions = {}) {
+  constructor(client: HttpClientInstance, baseURL?: string, options: HttpClientOptions = {}) {
     this.options = options;
     this.customHeaders = options.customHeaders;
-    this.client = getClientInstance(client);
+    this.client = getClientInstance(client, baseURL);
   }
 
   public get<T>(
@@ -76,7 +77,9 @@ export class HttpClient {
   ): Promise<ResponseType> {
     const { headers, body } = options;
 
-    this.setCustomHeaders(headers);
+    if (headers) {
+      this.setCustomHeaders(headers);
+    }
 
     try {
       const processedParams = UrlParser.parseData(window.location.search);
