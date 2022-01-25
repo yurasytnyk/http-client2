@@ -85,7 +85,8 @@ export class HttpClient {
         method,
         url,
         headers: this.customHeaders,
-        data: body || processedParams
+        params: processedParams,
+        data: body
       };
 
       const { data }: ResponseType = await this.client.request(request);

@@ -4,7 +4,7 @@ import { HttpClient } from './http-client/http-client';
 import { FetchHttpClient } from './fetch-http-client/fetch-http-client';
 
 const fetchClient = new FetchHttpClient();
-const httpClient = new HttpClient(axios);
+const httpClient = new HttpClient(fetchClient);
 
 httpClient
   .setCustomHeaders({ 'Content-Type': 'application/json' })
