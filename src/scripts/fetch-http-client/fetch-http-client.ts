@@ -1,30 +1,46 @@
-import { FetchResponse, RequestConfig } from "./fetch-http-client-types";
+import { UrlParser } from '../utils/url-parser/url-parser';
+import { FetchResponse, RequestConfig } from './fetch-http-client-types';
 
 export class FetchHttpClient {
   private config: RequestConfig;
+  private baseURL: string;
 
-  constructor(config?: RequestConfig) { // <-- change URL type
+  constructor(baseURL?: string, config?: RequestConfig) {
+    this.baseURL = baseURL;
     this.config = config;
   }
 
-  parseUrlWithParams(config: RequestConfig): string {
-    const url = new URL(config.url);
-    url.search = new URLSearchParams(config.params).toString();
-    return url.href;
+  set setBaseURL(value: string) {
+    this.baseURL = value;
+  }
+
+  set setConfig(value: RequestConfig) {
+    this.config = value;
   }
 
   async request(config: RequestConfig): Promise<FetchResponse> {
-    const url = this.parseUrlWithParams(config);
+    const url = UrlParser.parseUrlWithParams(this.baseURL, config);
 
-    const res = await fetch(url, {
+    const requestConfig = new Request(url, {
       method: config.method,
       headers: this.config.headers,
-      body: JSON.stringify(config.data)
+      body: JSON.stringify(config.data),
     });
-    const data = await res.json();
 
-    return {
-      data
-    };
+    try {
+      const res = await fetch(requestConfig);
+      const data = await res.json();
+
+      return {
+        status: res.status,
+        statusText: res.statusText,
+        headers: config.headers,
+        config,
+        data,
+        request: requestConfig,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

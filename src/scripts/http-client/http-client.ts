@@ -13,10 +13,11 @@ export class HttpClient {
   private options: HttpClientOptions;
   private customHeaders: FetchRequestHeaders = {};
 
-  constructor(client: HttpClientInstance, baseURL?: string, options: HttpClientOptions = {}) {
+  constructor(baseURL: string, client: HttpClientInstance, options: HttpClientOptions = {}) {
+    this.baseURL = baseURL;
     this.options = options;
     this.customHeaders = options.customHeaders;
-    this.client = getClientInstance(client, baseURL);
+    this.client = getClientInstance(client, this.baseURL);
   }
 
   public get<T>(
@@ -84,7 +85,7 @@ export class HttpClient {
     try {
       const processedParams = UrlParser.parseData(window.location.search);
 
-      const request = {
+      const req = {
         method,
         url,
         headers: this.customHeaders,
@@ -92,7 +93,7 @@ export class HttpClient {
         data: body
       };
 
-      const { data }: ResponseType = await this.client.request(request);
+      const { data }: ResponseType = await this.client.request(req);
       return data;
     } catch (error) {
       throw new Error(error.message);

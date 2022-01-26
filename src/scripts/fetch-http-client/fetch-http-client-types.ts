@@ -1,5 +1,9 @@
 import { Method } from "../http-client/enums/enums";
 
+export type FetchResponseHeaders = Record<string, string> & {
+  "set-cookie"?: string[]
+};
+
 type RecordFetch<K extends keyof any, T> = {
   [P in K]: T;
 };
@@ -15,5 +19,10 @@ export interface RequestConfig {
 }
 
 export interface FetchResponse<T = any> {
+  status: number;
+  statusText: string;
+  headers: FetchResponseHeaders,
+  config: RequestConfig;
   data: T;
+  request?: any;
 }

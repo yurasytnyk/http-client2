@@ -44,6 +44,13 @@ export const getClientInstance = (client: HttpClientInstance, baseURL: string) =
 
     return instance;
   } else {
+    client.setBaseURL = baseURL;
+
+    client.setConfig = {
+      url: baseURL,
+      headers: { 'Content-Type': 'application/json' },
+    };
+
     return client;
   }
 }
