@@ -2,22 +2,21 @@ import { FetchResponse, RequestConfig } from "./fetch-http-client-types";
 
 export class FetchHttpClient {
   private config: RequestConfig;
-  private url: URL;
 
-  constructor(url: URL, config?: RequestConfig) { // <-- change URL type
+  constructor(config?: RequestConfig) { // <-- change URL type
     this.config = config;
-    this.url = url;
+  }
+
+  parseUrlWithParams(config: RequestConfig): string {
+    const url = new URL(config.url);
+    url.search = new URLSearchParams(config.params).toString();
+    return url.href;
   }
 
   async request(config: RequestConfig): Promise<FetchResponse> {
-    if (Object.keys(config.params).length) {
-      this.url = new URL(config.url);
-      this.url.search = new URLSearchParams(config.params).toString();
-    } else {
-      this.url.href = config.url;
-    }
-    
-    const res = await fetch(this.url.href, {
+    const url = this.parseUrlWithParams(config);
+
+    const res = await fetch(url, {
       method: config.method,
       headers: this.config.headers,
       body: JSON.stringify(config.data)
