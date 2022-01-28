@@ -15,7 +15,7 @@ export interface RequestConfig {
   method?: Method;
   headers?: Record<string, string>;
   data?: BodyInit | {};
-  params?: Record<string, string>; 
+  params?: Record<string, string>;
 }
 
 export interface FetchResponse<T = any> {
