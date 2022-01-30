@@ -1,6 +1,11 @@
 import { FetchClientInterceptors } from '../utils/fetch-interceptors/fetch-interceptors';
+import { FetchInterceptor } from '../utils/fetch-interceptors/fetch-interceptors.types';
 import { UrlParser } from '../utils/url-parser/url-parser';
-import { FetchInterceptorsService, FetchResponse, RequestConfig } from './fetch-http-client-types';
+import {
+  FetchInterceptorsService,
+  FetchResponse,
+  RequestConfig,
+} from './fetch-http-client-types';
 
 export class FetchHttpClient {
   private config: RequestConfig;
@@ -15,19 +20,19 @@ export class FetchHttpClient {
     this.interceptorsService = FetchClientInterceptors.fetchIntercept;
   }
 
-  get getController() {
+  public get getController() {
     return this.controller;
   }
 
-  set setController(value: AbortController) {
+  public set setController(value: AbortController) {
     this.controller = value;
   }
 
-  set setBaseURL(value: string) {
+  public set setBaseURL(value: string) {
     this.baseURL = value;
   }
 
-  set setConfig(value: RequestConfig) {
+  public set setConfig(value: RequestConfig) {
     this.config = value;
   }
 
@@ -39,6 +44,28 @@ export class FetchHttpClient {
         this.setController = new AbortController();
       }
     }, 1000);
+  }
+
+  public registrateInterceptors(config: FetchInterceptor) {
+    this.interceptorsService.register(config);
+    // this.interceptorsService.register({
+    //   request(url, config) {
+    //     return [url, config];
+    //   },
+    //   requestError(error) {
+    //     return Promise.reject(error);
+    //   },
+    //   response(response) {
+    //     if (response.status) {
+    //       console.log('hello from error');
+    //     }
+
+    //     return response;
+    //   },
+    //   responseError(error) {
+    //     return Promise.reject(error);
+    //   },
+    // });
   }
 
   public clearInterceptors() {
@@ -57,26 +84,7 @@ export class FetchHttpClient {
 
     try {
       this.setControllerOnAbort();
-      
-      this.interceptorsService.register({
-        request(url, config) {
-          return [url, config];
-        },
-        requestError(error) {
-          return Promise.reject(error);
-        },
-        response(response) {
-          if (response.status) {
-            console.log('hello from error');
-          }
-      
-          return response;
-        },
-        responseError(error) {
-          return Promise.reject(error);
-        }
-      });
-      
+
       const response = await fetch(requestConfig);
       const data = await response.json();
 

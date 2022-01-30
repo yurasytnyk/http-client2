@@ -73,8 +73,11 @@ export class HttpClient {
   }
 
   public clearInterceptors() {
-    if (!getAxiosInstance(this.client)) {
-      this.client.clearInterceptors(); // <-- don't forget about axios interceptors
+    if (getAxiosInstance(this.client)) {
+      this.client.interceptors.request.eject(0);
+      this.client.interceptors.response.eject(0);
+    } else {
+      this.client.clearInterceptors();
     }
   }
 

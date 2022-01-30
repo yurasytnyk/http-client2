@@ -31,4 +31,5 @@ export interface FetchResponse<T = any> {
 export interface FetchInterceptorsService {
   register: (interceptor: FetchInterceptor) => () => void;
   clear: () => void;
+  size: () => number;
 }

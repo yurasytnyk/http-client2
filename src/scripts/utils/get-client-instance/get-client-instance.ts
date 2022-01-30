@@ -10,7 +10,7 @@ export const getClientInstance = (client: HttpClientInstance, baseURL?: string) 
 
     instance.interceptors.request.use((config) => {
       const token = localStorage.getItem('token');
-  
+      
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -29,7 +29,6 @@ export const getClientInstance = (client: HttpClientInstance, baseURL?: string) 
   
           try {
             const response = "QpwL5tke4Pnpja7X4"; // <-- make api call to get valid token
-            
             localStorage.setItem('token', response);
   
             return instance.request(originalRequest);

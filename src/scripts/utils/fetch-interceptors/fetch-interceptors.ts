@@ -66,6 +66,7 @@ export class FetchClientInterceptors {
       clear: () => {
         FetchClientInterceptors.interceptors = [];
       },
+      size: () => FetchClientInterceptors.interceptors.length,
     };
   };
 }
