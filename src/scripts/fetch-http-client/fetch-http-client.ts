@@ -1,15 +1,18 @@
+import { FetchClientInterceptors } from '../utils/fetch-interceptors/fetch-interceptors';
 import { UrlParser } from '../utils/url-parser/url-parser';
-import { FetchResponse, RequestConfig } from './fetch-http-client-types';
+import { FetchInterceptorsService, FetchResponse, RequestConfig } from './fetch-http-client-types';
 
 export class FetchHttpClient {
   private config: RequestConfig;
   private baseURL: string;
   private controller: AbortController;
+  private interceptorsService: FetchInterceptorsService;
 
   constructor(baseURL?: string, config?: RequestConfig) {
     this.baseURL = baseURL;
     this.config = config;
     this.controller = new AbortController();
+    this.interceptorsService = FetchClientInterceptors.fetchIntercept;
   }
 
   get getController() {
@@ -28,7 +31,7 @@ export class FetchHttpClient {
     this.config = value;
   }
 
-  private controllerDelay() {
+  private setControllerOnAbort() {
     setTimeout(() => {
       const aborted = this.getController.signal.aborted;
 
@@ -36,6 +39,10 @@ export class FetchHttpClient {
         this.setController = new AbortController();
       }
     }, 1000);
+  }
+
+  public clearInterceptors() {
+    this.interceptorsService.clear();
   }
 
   async request(config: RequestConfig): Promise<FetchResponse> {
@@ -49,14 +56,33 @@ export class FetchHttpClient {
     });
 
     try {
-      this.controllerDelay();
+      this.setControllerOnAbort();
       
-      const res = await fetch(requestConfig);
-      const data = await res.json();
+      this.interceptorsService.register({
+        request(url, config) {
+          return [url, config];
+        },
+        requestError(error) {
+          return Promise.reject(error);
+        },
+        response(response) {
+          if (response.status) {
+            console.log('hello from error');
+          }
+      
+          return response;
+        },
+        responseError(error) {
+          return Promise.reject(error);
+        }
+      });
+      
+      const response = await fetch(requestConfig);
+      const data = await response.json();
 
       return {
-        status: res.status,
-        statusText: res.statusText,
+        status: response.status,
+        statusText: response.statusText,
         headers: config.headers,
         config,
         data,

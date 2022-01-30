@@ -6,6 +6,7 @@ import { HttpClientInstance } from './types/typedef';
 import { HttpClientOptions } from './types/typedef';
 import { MethodOptions } from './types/typedef';
 import { ResponseType } from './types/typedef';
+import { getAxiosInstance } from '../utils/type-checkers/type-checkers';
 
 export class HttpClient {
   private baseURL: string = '';
@@ -69,6 +70,12 @@ export class HttpClient {
     }
 
     return fulfilled.map((data) => data.value);
+  }
+
+  public clearInterceptors() {
+    if (!getAxiosInstance(this.client)) {
+      this.client.clearInterceptors(); // <-- don't forget about axios interceptors
+    }
   }
 
   private async invoke<T>(

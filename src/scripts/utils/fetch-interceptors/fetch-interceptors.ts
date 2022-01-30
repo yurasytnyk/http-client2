@@ -5,14 +5,10 @@ import {
 } from './fetch-interceptors.types';
 
 export class FetchClientInterceptors {
-  private interceptors: FetchInterceptor[];
+  private static interceptors: FetchInterceptor[] = [];
 
-  constructor(interceptors: FetchInterceptor[] = []) {
-    this.interceptors = interceptors;
-  }
-
-  private interceptor = (fetch: Fetch, ...args: any) => {
-    const reversedInterceptors = this.interceptors.reduce((array, interceptor) => {
+  private static interceptor = (fetch: Fetch, ...args: any): Promise<any> => {
+    const reversedInterceptors = FetchClientInterceptors.interceptors.reduce((array, interceptor) => {
       return [interceptor].concat(array);
     }, []);
     let promise = Promise.resolve(args);
@@ -23,7 +19,7 @@ export class FetchClientInterceptors {
       }
     });
   
-    promise = promise.then((args: [any]) => { // <-- set proper type instead of any
+    promise = promise.then((args: [any]) => { // <-- if interceptors not provided than work like native fetch api
       const request = new Request(...args);
   
       return fetch(request)
@@ -46,45 +42,31 @@ export class FetchClientInterceptors {
     return promise;
   }
 
-  public fetchIntercept = () => { // <-- function for overriding native fetch function
+  public static get fetchIntercept() {
     const { fetch: origFetch } = window;
   
-    window.fetch = ((fetch) => { // <-- override function with IIFE
+    window.fetch = ((fetch) => { // <-- override fetch with IIFE
       return (...args) => {
-        return this.interceptor(fetch, ...args); // <-- pass fetch from closure and url with config in rest params
+        return FetchClientInterceptors.interceptor(fetch, ...args);
       };
     })(origFetch);
   
     return {
       register: (interceptor: FetchInterceptor) => { // <-- when fetchIntercept is invoke with register method pass object for different
-        this.interceptors.push(interceptor);                    // cases such as request, requestError, response, responseError
+        FetchClientInterceptors.interceptors.push(interceptor);         // cases such as request, requestError, response, responseError
   
         return () => {
-          const index = this.interceptors.indexOf(interceptor);
+          const index = FetchClientInterceptors.interceptors.indexOf(interceptor);
   
           if (index >= 0) {
-            this.interceptors.splice(index, 1);
+            FetchClientInterceptors.interceptors.splice(index, 1);
           }
         };
       },
-      clear: function () {
-        this.interceptors = [];
+      clear: () => {
+        FetchClientInterceptors.interceptors = [];
       },
     };
   };
 }
 
-export const unregister = new FetchClientInterceptors().fetchIntercept().register({
-  request(url, config) {
-    return [url, config];
-  },
-  requestError(error) {
-    return Promise.reject(error);
-  },
-  response(response) {
-    return response;
-  },
-  responseError(error) {
-    return Promise.reject(error);
-  }
-});
