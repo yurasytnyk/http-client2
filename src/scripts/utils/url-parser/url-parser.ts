@@ -16,7 +16,10 @@ export class UrlParser {
     return parsedParams;
   }
 
-  public static parseUrlWithParams(baseURL: string, config: RequestConfig): string {
+  public static parseUrlWithParams(
+    baseURL: string,
+    config: RequestConfig
+  ): string {
     const url = new URL(`${baseURL}${config.url}`);
     url.search = new URLSearchParams(config.params).toString();
     return url.href;

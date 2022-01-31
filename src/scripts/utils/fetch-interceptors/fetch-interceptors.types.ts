@@ -3,7 +3,7 @@ export interface FetchInterceptorResponse extends Response {
 }
 
 export interface FetchInterceptor {
-  request?(url: string, config: any): Promise<any[]> | any[];
+  request?(config: any): Promise<any[]> | any[];
   requestError?(error: any): Promise<any>;
   response?(response: FetchInterceptorResponse): FetchInterceptorResponse;
   responseError?(error: any): Promise<any>;

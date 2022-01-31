@@ -15,11 +15,11 @@ export class FetchClientInterceptors {
   
     reversedInterceptors.forEach(({ request, requestError }) => { // <-- process request interceptors
       if (request || requestError) {
-        promise = promise.then((args) => request(...args), requestError);
+        promise = promise.then((args: [Request]) => request(...args), requestError);
       }
     });
   
-    promise = promise.then((args: [any]) => { // <-- if interceptors not provided than work like native fetch api
+    promise = promise.then((args: [Request]) => { // <-- if interceptors not provided than work like native fetch api
       const request = new Request(...args);
   
       return fetch(request)
@@ -70,4 +70,3 @@ export class FetchClientInterceptors {
     };
   };
 }
-

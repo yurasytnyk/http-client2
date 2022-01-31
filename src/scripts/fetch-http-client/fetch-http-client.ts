@@ -48,24 +48,6 @@ export class FetchHttpClient {
 
   public registrateInterceptors(config: FetchInterceptor) {
     this.interceptorsService.register(config);
-    // this.interceptorsService.register({
-    //   request(url, config) {
-    //     return [url, config];
-    //   },
-    //   requestError(error) {
-    //     return Promise.reject(error);
-    //   },
-    //   response(response) {
-    //     if (response.status) {
-    //       console.log('hello from error');
-    //     }
-
-    //     return response;
-    //   },
-    //   responseError(error) {
-    //     return Promise.reject(error);
-    //   },
-    // });
   }
 
   public clearInterceptors() {
