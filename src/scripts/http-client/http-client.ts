@@ -85,15 +85,15 @@ export class HttpClient {
     }
   }
 
-  public clearInterceptors(id: number = 0) {
+  public clearInterceptors(interceptorsId?: number[]) {
     if (getAxiosInstance(this.client)) {
       try {
-        // if (id) { // <-- find valid interceptor
-        //   throw new Error('Provide valid interceptor id to delete');
-        // }
+        if (!interceptorsId?.length) {
+          throw new Error('Provide valid interceptor id to delete');
+        }
 
-        // this.client.interceptors.request.eject(id);
-        // this.client.interceptors.response.eject(id);
+        this.client.interceptors.request.eject(interceptorsId[0]);
+        this.client.interceptors.response.eject(interceptorsId[1]);
       } catch (error) {
         console.error(error);
       }
