@@ -7,6 +7,8 @@ import { HttpClientOptions } from './types/typedef';
 import { MethodOptions } from './types/typedef';
 import { ResponseType } from './types/typedef';
 import { getAxiosInstance } from '../utils/type-checkers/type-checkers';
+import { AxiosClientInterceptors } from '../utils/interceptors-creator/axios-interceptors/axios-interceptors';
+import { FetchInterceptor } from '../utils/interceptors-creator/fetch-interceptors/fetch-interceptors.types';
 
 export class HttpClient {
   private baseURL: string = '';
@@ -72,10 +74,29 @@ export class HttpClient {
     return fulfilled.map((data) => data.value);
   }
 
-  public clearInterceptors() {
+  public setInterceptors(config: FetchInterceptor = {}) {
     if (getAxiosInstance(this.client)) {
-      this.client.interceptors.request.eject(0);
-      this.client.interceptors.response.eject(0);
+      const reqInterceptor = AxiosClientInterceptors.setRequestInterceptor(this.client);
+      const resInterceptor = AxiosClientInterceptors.setResponseInterceptor(this.client);
+
+      return [reqInterceptor, resInterceptor];
+    } else {
+      this.client.registrateInterceptors(config);
+    }
+  }
+
+  public clearInterceptors(id: number = 0) {
+    if (getAxiosInstance(this.client)) {
+      try {
+        // if (id) { // <-- find valid interceptor
+        //   throw new Error('Provide valid interceptor id to delete');
+        // }
+
+        // this.client.interceptors.request.eject(id);
+        // this.client.interceptors.response.eject(id);
+      } catch (error) {
+        console.error(error);
+      }
     } else {
       this.client.clearInterceptors();
     }

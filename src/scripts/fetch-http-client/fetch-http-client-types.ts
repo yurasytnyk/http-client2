@@ -1,5 +1,5 @@
 import { Method } from '../http-client/enums/enums';
-import { FetchInterceptor } from '../utils/fetch-interceptors/fetch-interceptors.types';
+import { FetchInterceptor } from '../utils/interceptors-creator/fetch-interceptors/fetch-interceptors.types';
 
 export type FetchResponseHeaders = Record<string, string> & {
   'set-cookie'?: string[]

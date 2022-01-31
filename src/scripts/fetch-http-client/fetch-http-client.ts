@@ -1,5 +1,5 @@
-import { FetchClientInterceptors } from '../utils/fetch-interceptors/fetch-interceptors';
-import { FetchInterceptor } from '../utils/fetch-interceptors/fetch-interceptors.types';
+import { FetchClientInterceptors } from '../utils/interceptors-creator/fetch-interceptors/fetch-interceptors';
+import { FetchInterceptor } from '../utils/interceptors-creator/fetch-interceptors/fetch-interceptors.types';
 import { UrlParser } from '../utils/url-parser/url-parser';
 import {
   FetchInterceptorsService,
