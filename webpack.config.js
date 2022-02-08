@@ -15,7 +15,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Http client'
+      title: 'Http client',
+      template: path.resolve(__dirname, 'src/templates/index.html')
     }),
   ],
   resolve: {
